@@ -1,0 +1,154 @@
+# Life2
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<link href="juego.css" rel="stylesheet" type="text/css" />
+    <head>
+        <title></title>
+       
+        <script src="juego.js">
+
+        </script>
+        <link rel="SHORTCUT ICON" href="favicon.ico">
+    </head>
+    <body onLoad="pagina_cargada = false; setTimeout('juego_bloqueado = false; pagina_cargada = true; iniciar_juego_primera_vez();', 10);" onMouseUp="campo_seleccionable = false; pintar = false; borrar = false; arrastrando_objeto = false;" onClick="campo_seleccionable = false; arrastrando_objeto = false;" onMouseMove="if (pagina_cargada) { arrastrar(event); }" onKeyPress="tecla_pulsada(event, 'onkeypress');" onKeyDown="tecla_pulsada(event, 'onkeydown');" onKeyUp="pintar = false; borrar = false;" onMouseMove="if (pagina_cargada) { arrastrar(event); }" bgcolor="#99aa99" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+        <!-- Menu: -->
+        <div id="menu_superior" style="visibility:hidden; position:absolute; left:30px; top:10px; padding:0px; height:20px; background:transparent; color:#003300; text-align:left; line-height:20px; text-decoration:none; font-weight:none; font-family:arial; font-size:12px; cursor:pointer; cursor:hand; z-index:3;">
+            <form style="display:inline;" onSubmit="modificar_tablero(); return false;" align="center">
+                <center>
+                          
+                    <label for="tablero_x" style="line-height:12px; font-size:12px; font-weight:bold; cursor:pointer; cursor:hand;" accesskey="x" title="Ancho del tablero">
+                        x: <input type="text" name="tablero_x" id="tablero_x" accesskey="x" style="height:18px; line-height:10px; font-size:10px; font-weight:bold; font-family:arial; border:1px #00aa00 solid; color:#002200; background:#009900; text-align:center;" size="3" maxlength="3">
+                    </label>
+                    &nbsp;&nbsp;
+                    <label for="tablero_y" style="line-height:12px; font-size:12px; font-weight:bold; cursor:pointer; cursor:hand;" accesskey="y" title="Alto del tablero">
+                        y: <input type="text" name="tablero_y" id="tablero_y" accesskey="y" style="height:18px; line-height:10px; font-size:10px; font-weight:bold; font-family:arial; border:1px #00aa00 solid; color:#002200; background:#009900; text-align:center;" size="3" maxlength="3">
+                    </label>
+                    &nbsp;
+                    <input type="submit" value="OK" name="boton_aplicar" style="height:18px; color:#005500; font-weight:bold; text-align:center; line-height:9px; font-size:9px; font-family:verdana; cursor:pointer; cursor:hand;" accesskey="o" title="Aplicar opciones">
+                </center>
+            </form>
+                   
+            <div id="boton_incrementar_velocidad" style="position:absolute; left:210px; top:1px; width:26px; height:20px; background:url('img/boton.gif'); border:1px solid #00aa00; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; cursor:pointer; cursor:hand; -moz-user-select:none;" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1); modificar_velocidad_ciclos(0, true);" onMouseDown="modificar_velocidad_ciclos(-1, true);" onMouseUp="modificar_velocidad_ciclos(0, true);" onClick="modificar_velocidad_ciclos(-1, false);" onSelectStart="return false;">-</div>
+            <div id="velocidad_ciclos" style="position:absolute; left:242px; top:1px; width:65px; height:20px; background:url('img/boton.gif'); border:1px solid #00aa00; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; cursor:default;" title="Milisegundos entre ciclos">500</div>
+            <div id="boton_decrementar_velocidad" style="position:absolute; left:313px; top:1px; width:26px; height:20px; background:url('img/boton.gif'); border:1px solid #00aa00; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; cursor:pointer; cursor:hand; -moz-user-select:none;" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1); modificar_velocidad_ciclos(0, true);" onMouseDown="modificar_velocidad_ciclos(1, true);" onMouseUp="modificar_velocidad_ciclos(0, true);" onClick="modificar_velocidad_ciclos(1, false);" onSelectStart="return false;">+</div>
+                    <!-- </div> -->
+                    <!-- Esfera -->
+            <div id="boton_mundo_esferico" class="esfera" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1);" onClick="mundo_esferico = !mundo_esferico; this.style.border = '1px solid #556655'; if (multicolor) { mostrar_mensaje('Transformando colores...'); setTimeout('transformar_colores(); mostrar_mensaje(\'\');', 10); }">
+                <img src="http://i.imgur.com/v57AI9F.png" width="16" height="16" border="0" hspace="0" vspace="0" align="center" alt="@" title="" style="position:absolute; left:5px; top:1px; width:16px; height:16px; background:transparent; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:2; cursor:pointer; cursor:hand;">
+            </div>
+            
+            <!-- Multicolor -->
+            <div id="boton_multicolor" class="multicolor" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1);" onClick="multicolor = !multicolor; this.style.border = '1px solid #556655'; mostrar_mensaje('Transformando colores...'); setTimeout('transformar_colores(); mostrar_mensaje(\'\');', 10);">
+                <img src="http://i.imgur.com/AaBnSF2.png" width="16" height="16" border="0" hspace="0" vspace="0" align="center" alt="M" title="" style="position:absolute; left:5px; top:1px; width:16px; height:16px; background:transparent; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:2; cursor:pointer; cursor:hand;">
+            </div>
+            <div id="boton_pintar_aleatoriamente" style="position:absolute; left:446px; top:1px; width:26px; height:20px; background:url('http://i.imgur.com/BoDxIRB.png'); border:1px solid #00aa00; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:1; cursor:pointer; cursor:hand;" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1);" onClick="rellenar_tablero_aleatoriamente(Math.floor(Math.random() * parseInt(tablero_alto*tablero_ancho/tablero_ancho/2)), Math.floor(Math.random() * parseInt(tablero_alto*tablero_ancho/tablero_alto) + parseInt(tablero_alto*tablero_ancho/tablero_ancho)));">
+                <img src="img/aleatoriamente.gif" width="16" height="16" border="0" hspace="0" vspace="0" align="center" alt="A" title="" style="position:absolute; left:5px; top:1px; width:16px; height:16px; background:transparent; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:2; cursor:pointer; cursor:hand;">
+            </div>
+           <div id="boton_abrir_mundo" class="abrir" title="" onMouseOver="seleccionar_boton(this, 1);" onMouseOut="seleccionar_boton('', 1);" onClick="abrir_guardar_mundo('abrir');">  
+                <img src="http://i.imgur.com/xabXsoU.png" width="16" height="16" border="0" hspace="0" vspace="0" align="center" alt="Open" title="" style="position:absolute; left:5px; top:1px; width:16px; height:16px; background:transparent; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:2; cursor:pointer; cursor:hand;">
+            </div>
+            <div id="boton_guardar_mundo" class="guardar" onMouseOut="seleccionar_boton('', 1);" onClick="abrir_guardar_mundo('guardar');">
+                <img src="http://i.imgur.com/b5TFtg1.png" width="16" height="16" border="0" hspace="0" vspace="0" align="center" alt="Save" title="" style="position:absolute; left:5px; top:1px; width:16px; height:16px; background:transparent; color:#005500; font-weight:bold; text-align:center; line-height:16px; font-size:16px; font-family:arial; z-index:2; cursor:pointer; cursor:hand;">
+            </div>
+        </div>
+        <!-- Fin de Menu. -->
+        <!-- Mensaje: -->
+        <div id="mensaje" style="visibility:visible; position:absolute; left:18px; top:10px; width:600px; height:28px; border:0px; padding:0px; background:#55cc34; color:#002200; text-align:center; text-decoration:none; font-weight:bold; font-family:arial; font-size:16px; line-height:28px; filter:alpha(opacity=80); opacity:0.8; -moz-opacity:0.8; -khtml-opacity:0.8; z-index:8;">Inicializando...</div>
+        <!-- Fin de Mensaje. -->
+        <!-- Substituto de alert(): -->
+        <div id="alerta" style="visibility:hidden; background:#aaccaa; color:#aa0000; left:235px; top:125px; width:444px; height:240px; padding:0px; position:absolute; font-size:18px; font-style:normal; font-weight:bold; line-height:20px; text-align:center; filter:alpha(opacity=80); opacity:0.8; -moz-opacity:0.8; -khtml-opacity:0.8; -moz-user-select:none; cursor:crosshair; z-index:15;" onMouseUp="campo_seleccionable = false; arrastrando_objeto = false;" onMouseDown="if (campo_seleccionable) { campo_seleccionable = false; arrastrando_objeto = false; } else { arrastrando_objeto = this; arrastrando_objeto.sombra = 'alerta_sombra'; };" onSelectStart="return false;" onClick="if (document.getElementById('alerta').style.visibility == 'visible') { document.getElementById('formulario_alerta').boton_alerta.focus(); }">
+            <div id="boton_cerrar_mensaje_alerta" style="position:absolute; left:420px; top:5px; width:15px; height:10px; border:1px solid #003300; padding:0px; background:#dddddd; color:#005500; text-align:center; text-decoration:none; font-weight:bold; font-family:verdana; font-size:8px; line-height:8px; cursor:pointer; cursor:hand; -moz-user-select:none;" title="Close" onMouseOver="this.style.background='#ffffff'; this.style.color='#00ff00'; this.style.border='1px solid #007700';" onMouseOut="this.style.background='#dddddd'; this.style.color='#005500'; this.style.border='1px solid #003300';" onSelectStart="return false;" onClick="if (juego_bloqueado) { mostrar_mensaje('Cargando...'); setTimeout('iniciar_juego(true); mostrar_mensaje(\'\');', 10); } document.getElementById('alerta').style.visibility = 'hidden'; document.getElementById('alerta_sombra').style.visibility = 'hidden';">X</div>
+            <div id="alerta_mensaje" style="background:transparent; color:#aa0000; left:10px; top:20px; width:424px; height:210px; padding:0px; position:absolute; font-size:14px; font-style:normal; font-weight:bold; line-height:20px; text-align:center;">
+            </div>
+            <div style="position:absolute; left:0px; top:200px; width:430px; height:30px;">
+                <form style="display:inline;" id="formulario_alerta" onSubmit="if (juego_bloqueado) { mostrar_mensaje('Cargando...'); setTimeout('iniciar_juego(true); mostrar_mensaje(\'\');', 10); } document.getElementById('alerta').style.visibility = 'hidden'; document.getElementById('alerta_sombra').style.visibility = 'hidden'; return false;" align="center">
+                    <center><input type="submit" value="Aceptar" name="boton_alerta" style="height:24px; color:#aa0000; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:pointer; cursor:hand; -moz-user-select:none;" accesskey="a" onSelectStart="return false;" title="Cerrar ventana"></center>
+                </form>
+            </div>
+        </div>
+        <div id="alerta_sombra" style="visibility:hidden; background:#00aaaa; color:#aa0000; left:239px; top:129px; width:444px; height:240px; padding:0px; position:absolute; font-size:18px; font-style:normal; font-weight:bold; line-height:20px; text-align:center; filter:alpha(opacity=50); opacity:0.5; -moz-opacity:0.5; -khtml-opacity:0.5; -moz-user-select:none; cursor:crosshair; z-index:14;" onMouseUp="campo_seleccionable = false; arrastrando_objeto = false;" onMouseDown="if (campo_seleccionable) { campo_seleccionable = false; arrastrando_objeto = false; } else { arrastrando_objeto = document.getElementById('alerta'); arrastrando_objeto.sombra = 'alerta_sombra'; }" onSelectStart="return false;" onClick="if (document.getElementById('alerta').style.visibility == 'visible') { document.getElementById('formulario_alerta').boton_alerta.focus(); }">
+        </div>
+        <!-- Fin de Substituto de alert(). -->
+        <!-- Dialogo para guardar o abrir un mundo: -->
+        <div id="abrir_guardar" style="visibility:hidden; background:#aaccaa; color:#aa0000; left:235px; top:125px; width:700px; padding:20px; position:absolute; font-size:18px; font-style:normal; font-weight:bold; line-height:20px; text-align:center; filter:alpha(opacity=90); opacity:0.9; -moz-opacity:0.9; -khtml-opacity:0.9; cursor:crosshair; z-index:10;" onMouseUp="campo_seleccionable = false; arrastrando_objeto = false;" onMouseDown="if (campo_seleccionable) { campo_seleccionable = false; arrastrando_objeto = false; } else { arrastrando_objeto = this; arrastrando_objeto.sombra = 'abrir_guardar_sombra'; };">
+            <div align="right"><div id="boton_cerrar_abrir_guardar" style="width:15px; height:10px; border:1px solid #003300; padding:0px; background:#dddddd; color:#005500; text-align:center; text-decoration:none; font-weight:bold; font-family:verdana; font-size:8px; line-height:8px; cursor:pointer; cursor:hand; -moz-user-select:none;" title="Close" onMouseOver="this.style.background='#ffffff'; this.style.color='#00ff00'; this.style.border='1px solid #007700';" onMouseOut="this.style.background='#dddddd'; this.style.color='#005500'; this.style.border='1px solid #003300';" onSelectStart="return false;" onClick="document.getElementById('abrir_guardar').style.visibility = 'hidden'; document.getElementById('abrir_guardar_sombra').style.visibility = 'hidden'; document.getElementById('abrir_guardar_contenido_guardar').style.visibility = 'hidden'; document.getElementById('abrir_guardar_contenido_guardar').style.display = 'none';">X</div></div>
+            <div id="abrir_guardar_titulo" style="background:transparent; color:#aa0000; width:640px; padding:0px; font-size:14px; font-style:normal; font-weight:bold; line-height:20px; text-align:center;">
+                Guardar mundo
+            </div>
+            <div style="width:640px; text-align:center;">
+                <form style="display:inline; font-family:verdana; font-size:12px; font-weight:normal;" id="formulario_alerta" onSubmit="abrir_guardar_procesar(); return false;" align="center">
+                    <center>
+                        <div id="abrir_guardar_contenido_guardar" align="left" style="display:none; visibility:hidden; text-align:left;">
+                        Mapa:
+                        <br>
+                        <div id="abrir_guardar_mapa" style="padding:8px; border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:left; line-height:6px; font-size:6px; font-family:arial; cursor:text;" accesskey="m" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;"></div>
+                        x: <input type="text" id="abrir_guardar_x" name="abrir_guardar_x" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="x" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="3" maxlength="3">
+                        &nbsp;&nbsp;&nbsp;
+                        y: <input type="text" id="abrir_guardar_y" name="abrir_guardar_y" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="y" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="3" maxlength="3">
+                        <br>
+                        <label for="abrir_guardar_reproducir_automaticamente" accesskey="r" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_reproducir_automaticamente" id="abrir_guardar_reproducir_automaticamente"> Reproducir automaticamente</label>
+                        <br>
+                        <label for="abrir_guardar_mundo_esferico" accesskey="e" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_mundo_esferico" id="abrir_guardar_mundo_esferico"> Mundo esferico</label>
+                        <br>
+                        <label for="abrir_guardar_multicolor" accesskey="u" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_multicolor" id="abrir_guardar_multicolor"> Multicolor</label>
+                        <br>
+                        <label for="abrir_guardar_esconder_menu_superior" accesskey="s" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_esconder_menu_superior" id="abrir_guardar_esconder_menu_superior"> Esconder men&uacute; superior</label>
+                        <br>
+                        <label for="abrir_guardar_esconder_menu_inferior" accesskey="i" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_esconder_menu_inferior" id="abrir_guardar_esconder_menu_inferior"> Esconder controles inferiores</label>
+                        <br>
+                        <label for="abrir_guardar_esconder_informacion" accesskey="c" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_esconder_informacion" id="abrir_guardar_esconder_informacion"> Esconder panel de informaci&oacute;n inferior</label>
+                        <br>
+                        <label for="abrir_guardar_impedir_pintar" accesskey="p" style="cursor:pointer; cursor:hand;"><input type="checkbox" name="abrir_guardar_impedir_pintar" id="abrir_guardar_impedir_pintar"> No dejar pintar</label>
+                        <br>
+                        Milisegundos entre ciclos: <input type="text" id="abrir_guardar_velocidad" name="abrir_guardar_velocidad" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="v" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="5" maxlength="5">
+                        <br>
+                        Ancho de las celdas: <input type="text" id="abrir_guardar_celda_ancho" name="abrir_guardar_celda_ancho" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="c" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="3" maxlength="3">
+                        <br>
+                        Alto de las celdas: <input type="text" id="abrir_guardar_celda_alto" name="abrir_guardar_celda_alto" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="o" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="3" maxlength="3">
+                        <br>
+                        Espacio entre celdas: <input type="text" id="abrir_guardar_celda_espaciado" name="abrir_guardar_celda_espaciado" style="border:1px #00aa00 solid; color:#002200; background:#aaddaa; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="e" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;" size="3" maxlength="3">
+                        </div>
+                        URL generada:
+                        <br>
+                        <textarea id="abrir_guardar_url" name="abrir_guardar_url" style="padding:8px; border:1px #00aa00 solid; width:600px; height:80px; color:#002200; background:#aaddaa; font-weight:bold; text-align:left; line-height:12px; font-size:12px; font-family:arial; cursor:text;" accesskey="m" onMouseDown="campo_seleccionable = true;" onMouseUp="campo_seleccionable = false;"></textarea>
+                        <br>
+                        <input type="submit" value="Generar URL" id="boton_abrir_guardar" name="boton_abrir_guardar" style="height:24px; color:#aa0000; font-weight:bold; text-align:center; line-height:12px; font-size:12px; font-family:arial; cursor:pointer; cursor:hand; -moz-user-select:none;" accesskey="a" onSelectStart="return false;" title="Generar URL">
+                        <br>
+                    </center>
+                </form>
+           </div>
+        </div>
+        <div id="abrir_guardar_sombra" style="visibility:hidden; background:#00aaaa; color:#aa0000; left:239px; top:129px; width:700px; height:500px; padding:0px; position:absolute; font-size:18px; font-style:normal; font-weight:bold; line-height:20px; text-align:center; filter:alpha(opacity=50); opacity:0.5; -moz-opacity:0.5; -khtml-opacity:0.5; -moz-user-select:none; cursor:crosshair; z-index:9;" onMouseUp="campo_seleccionable = false; arrastrando_objeto = false;" onMouseDown="if (campo_seleccionable) { campo_seleccionable = false; arrastrando_objeto = false; } else { arrastrando_objeto = document.getElementById('abrir_guardar');; arrastrando_objeto.sombra = 'abrir_guardar_sombra'; }" onSelectStart="return false;">
+        </div>
+        <!-- Fin de Dialogo para guardar o abrir un mundo:. -->
+        <!-- Zona de juego: -->
+        <div id="zona_juego" style="left:20px; top:40px; width:450px; height:450px; visibility:visible; position:absolute; border:0px; padding:0px; background:#009900; color:#333333; text-align:left; line-height:40px; text-decoration:none; font-family:verdana; font-size:10px; -moz-user-select:none; z-index:1;" onSelectStart="return false;" onContextMenu="return false;" onMouseDown="pintar = true;" onMouseUp="pintar = false;"></div>
+        <!-- Fin de Zona de juego. -->
+        <!-- Panel: -->
+        <div id="panel" style="left:30px; top:40px; width:160px; height:50px; visibility:visible; position:absolute; border:0px; padding:0px; background:#fffff; color:#333333; text-align:center; line-height:50px; text-decoration:none; font-family:verdana; font-size:10px; z-index:1;">
+            <img src="http://i.imgur.com/PalDpw6.png" id="boton_play" style="position:absolute; left:10px; top:5px; width:40px; height:40px; border:1px solid #00aa00; cursor:pointer; cursor:hand; z-index:2;" title="" onClick="juego_pausado = false; mostrar_mensaje(''); comenzar_ciclos(ciclos_milisegundos); seleccionar_boton(document.getElementById('boton_play'), 2);" onMouseOver="seleccionar_boton(this, 2);" onMouseOut="seleccionar_boton('', 2);">
+            <img src="http://i.imgur.com/ZTRPdmz.png" id="boton_pausa" style="position:absolute; left:60px; top:5px; width:40px; height:40px; border:1px solid #00aa00; cursor:pointer; cursor:hand; z-index:2;" title="" onClick="if (se_ha_comenzado) { if (!juego_pausado) { juego_pausado = true; seleccionar_boton(document.getElementById('boton_pausa'), 2); parar_ciclos(); mostrar_mensaje('Pausa'); } else { juego_pausado = false; mostrar_mensaje(''); comenzar_ciclos(ciclos_milisegundos); } }" onMouseOver="seleccionar_boton(this, 2);" onMouseOut="seleccionar_boton('', 2);">
+            <img src="http://i.imgur.com/2WfX6c4.png" id="boton_stop" style="position:absolute; left:110px; top:5px; width:40px; height:40px; border:1px solid #00aa00; cursor:pointer; cursor:hand; z-index:2;" title="" onClick="juego_pausado = false; se_ha_comenzado = false; seleccionar_boton('', 2); parar_ciclos(); mostrar_mensaje('Creando tablero...'); setTimeout('crear_tablero(); mostrar_mensaje(\'\');', 10);" onMouseOver="seleccionar_boton(this, 2);" onMouseOut="seleccionar_boton('', 2);">
+        </div>
+        <!-- Fin de Panel. -->
+        <!-- Etiqueta que describe la accion del boton: -->
+        <span id="etiqueta_boton" style="position:absolute; left:0px; top:0px; height:12px; visibility:hidden; background:transparent; color:#002200; font-family:arial; font-size:12px; line-height:12px; font-weight:bold; cursor:default; z-index:3;">Cargando...</span>
+        <!-- Fin de Etiqueta que describe la accion del boton. -->
+        <!-- Panel 2: -->
+        <div id="panel2" class="panel2">
+            &nbsp;&nbsp;&nbsp; Estable: <span id="estable">si</span>
+            &nbsp; Poblaci&oacute;n: <span id="poblacion">0</span> <span id="estado_poblacion">[Extinta]</span>
+            &nbsp; Ciclos: <span id="ciclos">0</span>
+            &nbsp;&nbsp;&nbsp;
+           
+        </div>
+        <!-- Fin de Panel 2. -->
+        <!-- Informacion: -->
+        <div id="informacion" style="left:10px; top:490px; height:0px; position:absolute; border:0px; padding:0px; background:transparent; color:#333333; text-align:left; line-height:20px; text-decoration:none; font-family:verdana; font-size:9px; z-index:3;">
+             
+            <span id="ayuda" style="display:none;">
+                
+        </div>
+        <!-- Fin de Informacion. -->
+    </body>
+</html>
