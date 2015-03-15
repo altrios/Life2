@@ -1,4 +1,4 @@
-# Life2
+
 
 
                 //Define si la pagina ya se ha cargado completamente o no:
